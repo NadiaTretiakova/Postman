@@ -541,8 +541,8 @@
 					"script": {
 						"exec": [
 							"",
-							"",
-							"pm.environment.set ('Cur_ID', '{{$randomCur_ID}}');"
+							"//Create random Cur_ID",
+							"pm.environment.set ('Cur_ID', _.random(1, 356));"
 						],
 						"type": "text/javascript"
 					}
@@ -623,6 +623,10 @@
 							"    pm.expect(tv4.validate(carrier, schema)).to.be.true",
 							"}) ",
 							"",
+							"",
+							"",
+							"",
+							"",
 							""
 						],
 						"type": "text/javascript"
@@ -665,29 +669,6 @@
 							"key": "curr_code",
 							"value": "1",
 							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "New Request",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{url}}/curr_byn?auth_token={{token}}",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"curr_byn"
-					],
-					"query": [
-						{
-							"key": "auth_token",
-							"value": "{{token}}"
 						}
 					]
 				}
