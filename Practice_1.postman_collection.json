@@ -542,7 +542,12 @@
 						"exec": [
 							"",
 							"//Create random Cur_ID",
-							"pm.environment.set ('Cur_ID', _.random(1, 356));"
+							"pm.test ('Create random Cur_ID', function(){",
+							"    let jsonData = pm.response.json();",
+							"    let randomID = jsonData[Math.floor(Math.random()*jsonData.length)];",
+							"    console.log(randomID.Cur_ID);",
+							"    pm.environment.set('Cur_ID', randomID.Cur_ID);",
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -649,12 +654,7 @@
 							"value": "{{Cur_ID}}",
 							"type": "text"
 						}
-					],
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+					]
 				},
 				"url": {
 					"raw": "{{url}}/curr_byn",
@@ -670,6 +670,86 @@
 							"value": "1",
 							"disabled": true
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Currency_info***",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test ('Iteration cycle', function(){",
+							"    // Reading JSon data from the Postman query",
+							"    let jsonData = pm.response.json();",
+							"    let id = 0;",
+							"    for (id = 0; id < jsonData.length; id++){",
+							"        // Composing a POST request to the curr_byn endpoint",
+							"        const postRequest = {",
+							"            url: pm.variables.get('url') + \"/curr_byn\",",
+							"            method: 'POST',",
+							"            headers: {'Content-Type': 'multipart/form-data'},",
+							"            body: { ",
+							"                mode: 'formdata',",
+							"                formdata:[{",
+							"                    \"key\":\"auth_token\",",
+							"                    \"value\": pm.variables.get('token')},",
+							"                    {\"key\":\"curr_code\",",
+							"                    \"value\": jsonData[id].Cur_ID",
+							"                    }]",
+							"            }, ",
+							"        };",
+							"        // Sending the request to endpoint curr_byn and if response is 200 - print Currency info",
+							"        pm.sendRequest(postRequest, (error, response) => {",
+							"            if (response.code === 200) {",
+							"                console.log(response.json());",
+							"            }",
+							"        })",
+							"    };",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "auth_token",
+							"value": "{{token}}",
+							"type": "text"
+						},
+						{
+							"key": "curr_code",
+							"value": "{{Cur_ID}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/currency",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"currency"
 					]
 				}
 			},
